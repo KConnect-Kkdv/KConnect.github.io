@@ -425,35 +425,9 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
-<script>
-function shuffleAutoDrivers() {
-  const driverGrid = document.querySelector('#call-auto .driver-grid');
-  const drivers = Array.from(driverGrid.children);
-  
-  // Shuffle using Fisher-Yates
-  for (let i = drivers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [drivers[i], drivers[j]] = [drivers[j], drivers[i]];
-  }
-
-  // Clear and re-append in new order
-  driverGrid.innerHTML = '';
-  drivers.forEach(driver => driverGrid.appendChild(driver));
-}
-
-// Call shuffle when opening "Call an Auto"
-function openCallAuto() {
-  shuffleAutoDrivers();
-  document.getElementById('call-auto').classList.remove('hidden');
-}
-
-// Example back button handler
-function goBackToMain() {
-  document.getElementById('call-auto').classList.add('hidden');
-}
-</script>
 </body>
 </html>
+
 
 
 
