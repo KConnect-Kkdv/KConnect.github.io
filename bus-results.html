@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bus Results</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff3300, white, #ffd900);
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+    }
+    li {
+      margin: 10px 0;
+    }
+    .back-btn {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      text-decoration: none;
+      color: white;
+      background: #3b5bdb;
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bus Schedule</h1>
+  <div id="bus-info"></div>
+  <a href="index.html" class="back-btn">← Back to Home</a>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const time = urlParams.get('time');
+    const destination = urlParams.get('destination');
+
+    const buses = {
+      'To Kodungallur': [
+        { name: 'Sivapriya', arrivalTime: '06:40' },
+        { name: 'Lovelight', arrivalTime: '08:00' },
+        { name: 'Sivapriya', arrivalTime: '10:20' },
+        { name: 'Gurunadhan', arrivalTime: '10:45' },
+        { name: 'Brothers', arrivalTime: '11:00' },
+        { name: 'Lovelight', arrivalTime: '13:00' },
+        { name: 'Sivapriya', arrivalTime: '14:00' },
+        { name: 'Brothers', arrivalTime: '15:00' },
+        { name: 'Sivapriya', arrivalTime: '16:00' },
+        { name: 'Lovelight', arrivalTime: '18:40' }
+      ],
+      'To Mala': [
+        { name: 'Sivapriya', arrivalTime: '07:20' },
+        { name: 'Brothers', arrivalTime: '07:50' },
+        { name: 'Sivapriya', arrivalTime: '11:20' },
+        { name: 'Brothers', arrivalTime: '11:50' },
+        { name: 'Sivapriya', arrivalTime: '17:00' },
+        { name: 'St.Jude', arrivalTime: '06:20' }
+      ],
+      'To Thrissur': [
+        { name: 'Gurunadhan', arrivalTime: '06:45' },
+        { name: 'Lovelight', arrivalTime: '09:10' }
+      ],
+      'To Chalakudy': [
+        { name: 'Mahamaya', arrivalTime: '06:30' },
+        { name: 'Mahamaya', arrivalTime: '09:30' },
+        { name: 'Cheenikkas', arrivalTime: '10:00' },
+        { name: 'Cheenikkas', arrivalTime: '13:00' }
+      ],
+      'To Irinjalakuda': [
+        { name: 'Gurunadhan', arrivalTime: '06:45' },
+        { name: 'Lovelight', arrivalTime: '09:10' }
+      ]
+    };
+
+    const container = document.getElementById('bus-info');
+    const available = buses[destination]?.filter(bus => bus.arrivalTime >= time) || [];
+
+    if (available.length > 0) {
+      container.innerHTML = `<h2>${destination} - After ${time}</h2><ul>` +
+        available.map(bus => `<li>${bus.name} - ${bus.arrivalTime}</li>`).join('') +
+        '</ul>';
+    } else {
+      container.innerHTML = `<h2>${destination} - After ${time}</h2><p>No buses available.</p>`;
+    }
+  </script>
+</body>
+</html>

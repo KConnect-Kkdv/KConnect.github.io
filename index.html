@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bus Time Finder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff3300, white, #ffd900);
+      padding: 20px;
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    .btn {
+      background-color: #3b5bdb;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #283db3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Find Available Buses</h1>
+  <form id="busForm" onsubmit="handleSubmit(event)">
+    <label for="time">Select Time</label>
+    <input type="time" id="time" name="time" required />
+    
+    <label for="destination">Select Destination</label>
+    <select name="destination" required>
+      <option value="To Kodungallur">To Kodungallur</option>
+      <option value="To Mala">To Mala</option>
+      <option value="To Thrissur">To Thrissur</option>
+      <option value="To Chalakudy">To Chalakudy</option>
+      <option value="To Irinjalakuda">To Irinjalakuda</option>
+    </select>
+    
+    <button class="btn" type="submit">Show Buses →</button>
+  </form>
+
+  <script>
+    function handleSubmit(event) {
+      event.preventDefault();
+      const time = document.getElementById('time').value;
+      const destination = event.target.destination.value;
+      window.location.href = `bus-results.html?time=${encodeURIComponent(time)}&destination=${encodeURIComponent(destination)}`;
+    }
+  </script>
+</body>
+</html>
