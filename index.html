@@ -3,66 +3,427 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bus Time Finder</title>
+  <title>Connect - Bus & Auto Service</title>
+
+  <!-- SEO Enhancements -->
+  <meta name="description" content="Local bus & auto timings for Kombathukadavu - KCYM Initiative.">
+  <meta name="keywords" content="Kombathukadavu, bus timings, auto service, KCYM, local transport">
+
   <style>
+    :root {
+      --bg-light: linear-gradient(135deg, #ff3300, white, #ffd900);
+      --bg-dark: #121212;
+      --text-light: #333;
+      --text-dark: #f0f0f0;
+      --card-bg-light: #fff;
+      --card-bg-dark: #1e1e1e;
+    }
+
     body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #ff3300, white, #ffd900);
-      padding: 20px;
-      color: #333;
-    }
-    h1, h2 {
       text-align: center;
+      color: var(--text-light);
+      background: var(--bg-light);
+      overflow-y: auto;
+      transition: background 0.5s, color 0.5s;
     }
-    form {
-      max-width: 400px;
-      margin: 0 auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
+
+    body.dark-mode {
+      background: var(--bg-dark);
+      color: var(--text-dark);
     }
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 16px;
+
+    .center-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
     }
+
+    .logo {
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .subtext {
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
     .btn {
-      background-color: #3b5bdb;
+      display: inline-block;
+      padding: 15px 30px;
+      background: white;
+      color: #3b5bdb;
+      font-size: 18px;
+      font-weight: bold;
+      border: 2px solid #3b5bdb;
+      border-radius: 30px;
+      margin: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #f0f0f0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .tab-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .tab-button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: 2px solid #3b5bdb;
+      background: white;
+      color: #3b5bdb;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .tab-button:hover {
+      background: #3b5bdb;
       color: white;
+    }
+
+    .bus-info {
+      margin: 20px auto;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+    }
+
+    body.dark-mode .bus-info {
+      background: var(--card-bg-dark);
+    }
+
+    .bus-info ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .bus-info li {
+      margin: 10px 0;
+    }
+
+    .disclaimer {
+      font-size: 12px;
+      color: #555;
+      font-style: italic;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
+
+    .driver-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      padding: 30px;
+      width: 95%;
+      max-width: 1200px;
+      margin: auto;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 600px) {
+      .driver-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .driver-card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      font-size: 20px;
+    }
+
+    body.dark-mode .driver-card {
+      background: var(--card-bg-dark);
+      color: var(--text-dark);
+    }
+
+    .driver-card img {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 15px;
+    }
+
+    .call-btn {
+      padding: 15px 25px;
+      font-size: 20px;
+      background: #3b5bdb;
+      color: white;
+      font-weight: bold;
       border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .call-btn:hover {
+      background-color: #2d47a3;
+    }
+
+    .top-right-controls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .top-right-controls button,
+    .top-right-controls .clock {
+      font-size: 14px;
+      background: white;
+      border: 1px solid #3b5bdb;
+      color: #3b5bdb;
+      padding: 6px 12px;
+      border-radius: 8px;
       cursor: pointer;
     }
-    .btn:hover {
-      background-color: #283db3;
+
+    body.dark-mode .top-right-controls button,
+    body.dark-mode .top-right-controls .clock {
+      background: #333;
+      color: white;
+      border-color: #999;
     }
   </style>
 </head>
-<body>
-  <h1>Find Available Buses</h1>
-  <form id="busForm" onsubmit="handleSubmit(event)">
-    <label for="time">Select Time</label>
-    <input type="time" id="time" name="time" required />
-    
-    <label for="destination">Select Destination</label>
-    <select name="destination" required>
-      <option value="To Kodungallur">To Kodungallur</option>
-      <option value="To Mala">To Mala</option>
-      <option value="To Thrissur">To Thrissur</option>
-      <option value="To Chalakudy">To Chalakudy</option>
-      <option value="To Irinjalakuda">To Irinjalakuda</option>
-    </select>
-    
-    <button class="btn" type="submit">Show Buses →</button>
-  </form>
 
+<body>
+  <!-- Top Right Controls -->
+  <div class="top-right-controls">
+    <div class="clock" id="clock">--:--:--</div>
+    <button onclick="toggleDarkMode()">🌓 Dark Mode</button>
+    <button onclick="alert('Admin panel coming soon')">⚙️ Admin Panel</button>
+  </div>
+
+  <!-- Main Menu -->
+  <div id="main-menu">
+    <div class="center-container">
+      <div class="logo">
+        <img src="logo.png" alt="Kombathukadavu Konnect Logo" width="100" loading="lazy"/>
+      </div>
+      <h1>Kombathukadavu Connect</h1>
+      <p class="subtext">A Kombathukadavu KCYM Initiative</p>
+      <button class="btn" onclick="showAutoPage()">Call an Auto →</button>
+      <button class="btn" onclick="showBusSearch()">Search for Buses →</button>
+    </div>
+  </div>
+
+  <!-- Bus Search Page -->
+  <div id="bus-search" class="hidden">
+    <div class="center-container">
+      <h2>Select Bus Name</h2>
+      <div class="tab-buttons">
+        <button class="tab-button" onclick="showBusOptions('Sivapriya')">Sivapriya</button>
+        <button class="tab-button" onclick="showBusOptions('Lovelight')">Lovelight</button>
+        <button class="tab-button" onclick="showBusOptions('Brothers')">Brothers</button>
+        <button class="tab-button" onclick="showBusOptions('Cheenikkas')">Cheenikkas</button>
+        <button class="tab-button" onclick="showBusOptions('Mahamaya')">Mahamaya</button>
+        <button class="tab-button" onclick="showBusOptions('Gurunadhan')">Gurunadhan</button>
+        <button class="tab-button" onclick="showBusOptions('St. Jude')">St. Jude</button>
+      </div>
+      <div id="bus-info" class="bus-info"></div>
+      <button class="btn" onclick="goBackToMain()">⬅️ Back</button>
+    </div>
+  </div>
+
+  <!-- Call Auto Page -->
+  <div id="call-auto" class="hidden">
+    <h2>Call an Auto</h2>
+    <div class="driver-grid">
+      <div class="driver-card">
+        <img src="auto-icon.png" alt="Auto Driver Sreedharan" loading="lazy"/>
+        <p>Sreedharan (Sreemon Auto)</p>
+        <button class="call-btn" onclick="window.location.href='tel:+917034374192'">Call 📞</button>
+      </div>
+      <div class="driver-card">
+        <img src="auto-icon.png" alt="Auto Driver Murugeshan" loading="lazy"/>
+        <p>Murugan</p>
+        <button class="call-btn" onclick="window.location.href='tel:+919072279090'">Call 📞</button>
+      </div>
+      <div class="driver-card">
+        <img src="auto-icon.png" alt="Auto Driver Kareem" loading="lazy"/>
+        <p>Kareem (Nano)</p>
+        <button class="call-btn" onclick="window.location.href='tel:+919744871778'">Call 📞</button>
+      </div>
+      <div class="driver-card">
+        <img src="auto-icon.png" alt="Auto Driver Sushaman" loading="lazy"/>
+        <p>Sushaman (Jeeto)</p>
+        <button class="call-btn" onclick="window.location.href='tel:+919495040968'">Call 📞</button>
+      </div>
+      <div class="driver-card">
+        <img src="auto-icon.png" alt="Auto Driver Sanjo" loading="lazy"/>
+        <p>Sanjo</p>
+        <button class="call-btn" onclick="window.location.href='tel:+919446235198'">Call 📞</button>
+      </div>
+      <div class="driver-card">
+        <img src="auto-icon.png" alt="Auto Driver Ratheesh" loading="lazy"/>
+        <p>Ratheesh</p>
+        <button class="call-btn" onclick="window.location.href='tel:+918086818127'">Call 📞</button>
+      </div>
+      <div class="driver-card">
+        <img src="auto-icon.png" alt="Auto Driver Mahesh" loading="lazy"/>
+        <p>Mahesh</p>
+        <button class="call-btn" onclick="window.location.href='tel:+918086147264'">Call 📞</button>
+      </div>
+      <div class="driver-card">
+        <img src="auto-icon.png" alt="Auto Driver Babu" loading="lazy"/>
+        <p>Babu (Vellimoonga)</p>
+        <button class="call-btn" onclick="window.location.href='tel:+919447920843'">Call 📞</button>
+      </div>
+      <div class="driver-card">
+        <img src="auto-icon.png" alt="Auto Driver Jose" loading="lazy"/>
+        <p>Jose</p>
+        <button class="call-btn" onclick="window.location.href='tel:+919446764203'">Call 📞</button>
+      </div>
+    </div>
+    <button class="btn" onclick="goBackToMain()">⬅️ Back</button>
+  </div>
+
+  <!-- Script Section -->
   <script>
-    function handleSubmit(event) {
-      event.preventDefault();
-      const time = document.getElementById('time').value;
-      const destination = event.target.destination.value;
-      window.location.href = `bus-results.html?time=${encodeURIComponent(time)}&destination=${encodeURIComponent(destination)}`;
+    const busData = {
+      'Sivapriya': [
+        { time: '06:40 AM', destination: 'Kodungallur' },
+        { time: '07:20 AM', destination: 'Mala' },
+        { time: '10:20 AM', destination: 'Kodungallur' },
+        { time: '11:20 AM', destination: 'Mala' },
+        { time: '02:00 PM', destination: 'Kodungallur' },
+        { time: '02:45 PM', destination: 'Mala' },
+        { time: '03:45 PM', destination: 'Kodungallur' },
+        { time: '05:00 PM', destination: 'Mala' }
+      ],
+      'Lovelight': [
+        { time: '08:00 AM', destination: 'Kodungallur' },
+        { time: '09:10 AM', destination: 'Thrissur' },
+        { time: '09:10 AM', destination: 'Irinjalakuda' },
+        { time: '01:00 PM', destination: 'Kodungallur' },
+        { time: '05:40 PM', destination: 'Kodungallur' }
+      ],
+      'Brothers': [
+        { time: '07:05 AM', destination: 'Kodungallur' },
+        { time: '07:50 AM', destination: 'Mala' },
+        { time: '10:55 AM', destination: 'Kodungallur' },
+        { time: '11:50 AM', destination: 'Mala' },
+        { time: '03:00 PM', destination: 'Kodungallur' },
+        { time: '04:00 PM', destination: 'Mala' }
+      ],
+      'Mahamaya': [
+        { time: '06:30 AM', destination: 'Chalakudy(From Kombathukadavu Jn.)' },
+        { time: '08:30 AM', destination: 'Kodungallur' },
+        { time: '09:30 AM', destination: 'Chalakudy(From Kombathukadavu Jn.)' },
+        { time: '11:30 AM', destination: 'Kodungallur' },
+        { time: '12:30 PM', destination: 'Chalakudy(From Kombathukadavu Jn.)' },
+        { time: '04:30 PM', destination: 'Chalakudy' }
+      ],
+      'Gurunadhan': [
+        { time: '06:45 AM', destination: 'Irinjalakuda-Amballur(From Kombathukadavu Jn.)' },
+        { time: '10:40 AM', destination: 'Kodungallur' },
+        { time: '11:30 AM', destination: 'Irinjalakuda-Amballur' },
+        { time: '07:10 PM', destination: 'To Kombathukadavu' }
+      ],
+      'Cheenikkas': [
+        { time: '08:50 AM', destination: 'Kodungallur' },
+        { time: '10:00 AM', destination: 'Chalakudy' },
+        { time: '12:05 AM', destination: 'Kodungallur' },
+        { time: '01:00 PM', destination: 'Chalakudy' },
+        { time: '06:40 PM', destination: 'Kodungallur' },
+        { time: '07:20 PM', destination: 'Chalakudy' }
+      ],
+      'St. Jude': [
+        { time: '09:30 AM', destination: 'Irinjalakuda' },
+        { time: '12:55 PM', destination: 'Kodungallur' },
+        { time: '01:40 PM', destination: 'Irinjalakuda' },
+        { time: '04:55 PM', destination: 'Kodungallur' },
+        { time: '06:20 PM', destination: 'Velayanad' }
+      ]
+    };
+
+    function showBusOptions(busName) {
+      const container = document.getElementById('bus-info');
+      if (busData[busName].length > 0) {
+        container.innerHTML = `<h3>${busName} Timings</h3><ul>` +
+          busData[busName].map(e => `<li>${e.time} (${e.destination})</li>`).join('') +
+          '</ul>';
+      } else {
+        container.innerHTML = `<h3>${busName} Timings</h3><p>No data available yet. Please check back later.</p>`;
+      }
+      container.innerHTML += '<div style="margin-top: 20px;"><button class="btn" onclick="showAutoPage()">🚕 Call an Auto</button></div>';
+      container.innerHTML += '<div class="disclaimer">**Bus timings can vary due to road traffic and weather conditions.</div>';
+      container.style.display = 'block';
+    }
+
+    function showBusSearch() {
+      document.getElementById('main-menu').classList.add('hidden');
+      document.getElementById('call-auto').classList.add('hidden');
+      document.getElementById('bus-search').classList.remove('hidden');
+      document.getElementById('bus-info').style.display = 'none';
+    }
+
+    function showAutoPage() {
+      document.getElementById('main-menu').classList.add('hidden');
+      document.getElementById('bus-search').classList.add('hidden');
+      document.getElementById('call-auto').classList.remove('hidden');
+    }
+
+    function goBackToMain() {
+      document.getElementById('bus-search').classList.add('hidden');
+      document.getElementById('call-auto').classList.add('hidden');
+      document.getElementById('main-menu').classList.remove('hidden');
+    }
+
+    // Realtime Clock
+    setInterval(() => {
+      document.getElementById("clock").textContent = new Date().toLocaleTimeString();
+    }, 1000);
+
+    // Dark Mode Toggle
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
     }
   </script>
+<!-- Register Service Worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').then(function(reg) {
+      console.log('✅ Service Worker registered with scope:', reg.scope);
+    }).catch(function(error) {
+      console.log('❌ Service Worker registration failed:', error);
+    });
+  });
+}
+</script>
 </body>
 </html>
